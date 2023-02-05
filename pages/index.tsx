@@ -78,7 +78,9 @@ const Home: NextPage = () => {
       />
       {/* criar regra pelo menos um genero */}
       {!loading && (
-        <button onClick={(e) => generateSugestao(e)}>Procurar {obra}</button>
+        <button disabled={loading} onClick={(e) => generateSugestao(e)}>
+          Procurar {obra}
+        </button>
       )}
       {loading && <p>Carregando...</p>}
       {sugestao}
