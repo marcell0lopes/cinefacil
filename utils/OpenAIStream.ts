@@ -38,12 +38,6 @@ export async function OpenAIStream(payload: OpenAIStreamPayload) {
         if (event.type === "event") {
           const data = event.data;
 
-          console.group("event");
-          console.log("Received event!");
-          console.log("id: %s", event.id || "<none>");
-          console.log("data: %s", event.data);
-          console.groupEnd();
-
           if (data === "[DONE]") {
             controller.close();
             return;

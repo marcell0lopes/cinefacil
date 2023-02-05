@@ -1,0 +1,20 @@
+export type Obra = "Filme" | "Série" | "Anime" | "Reality show";
+export type Genero =
+  | "Ação"
+  | "Aventura"
+  | "Comédia"
+  | "Comédia romantica"
+  | "Drama"
+  | "Documentário"
+  | "Espionagem"
+  | "Faroeste"
+  | "Fantasia"
+  | "Ficção científica"
+  | "Guerra"
+  | "Mistério"
+  | "Musical"
+  | "Policial"
+  | "Romance"
+  | "Suspense"
+  | "Terror"
+  | "Thriller";

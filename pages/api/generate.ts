@@ -1,4 +1,6 @@
-import { OpenAIStream, OpenAIStreamPayload } from "@/utils/OpenAIStream";
+// Exemplo de rota comum
+
+import { NextApiRequest, NextApiResponse } from "next";
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error(
@@ -6,22 +8,17 @@ if (!process.env.OPENAI_API_KEY) {
   );
 }
 
-export const config = {
-  runtime: "edge",
-};
-
-const handler = async (req: Request): Promise<Response> => {
-  const { prompt } = (await req.json()) as {
-    prompt?: string;
-  };
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const { prompt } = req.body;
 
   if (!prompt) {
-    return new Response("Não foi enviado um prompt no request", {
-      status: 400,
-    });
+    return new Response("No prompt in the request", { status: 400 });
   }
 
-  const payload: OpenAIStreamPayload = {
+  const payload = {
     model: "text-davinci-003",
     prompt,
     temperature: 0.7,
@@ -29,12 +26,20 @@ const handler = async (req: Request): Promise<Response> => {
     frequency_penalty: 0,
     presence_penalty: 0,
     max_tokens: 200,
-    stream: true,
+    stream: false,
     n: 1,
   };
 
-  const stream = await OpenAIStream(payload);
-  return new Response(stream);
-};
+  const response = await fetch("https://api.openai.com/v1/completions", {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ""}`,
+    },
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 
-export default handler;
+  const json = await response.json();
+
+  return res.status(200).json(json.choices[0].text);
+}
