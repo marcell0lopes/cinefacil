@@ -10,7 +10,7 @@ export const generateSugestao = async (
   prompt: string,
   actions: Actions
 ) => {
-  e.preventDefault();
+  // e.preventDefault();
   actions.setSugestao("");
   actions.setLoading(true);
 
