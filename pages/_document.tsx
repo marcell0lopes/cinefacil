@@ -20,7 +20,7 @@ export default function Document() {
           content="Descubra o próximo filme que vai te emocionar ou a próxima série para maratonar"
         />
       </Head>
-      <body>
+      <body className="min-h-screen">
         <Main />
         <NextScript />
       </body>

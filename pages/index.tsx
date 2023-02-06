@@ -1,82 +1,129 @@
 import { Obra, Genero } from "@/@types";
 import Github from "@/components/Github";
+import ResizablePanel from "@/components/ResizablePanel";
+import { SelectGeneros } from "@/components/SelectGeneros";
 import { SelectObra } from "@/components/SelectObra";
 import { formatGeneros } from "@/utils/FormatGeneros";
 import { generateSugestao } from "@/utils/GenerateSugestao";
+import {
+  GitHubLogoIcon,
+  LinkedInLogoIcon,
+  TwitterLogoIcon,
+} from "@radix-ui/react-icons";
+import clsx from "clsx";
+import { AnimatePresence } from "framer-motion";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 const Home: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const [descricao, setDescricao] = useState("");
   const [obra, setObra] = useState<Obra>("Filme");
-  const [generos, setGeneros] = useState<Genero[]>(["Fantasia", "Ação"]);
+  const [generos, setGeneros] = useState<Genero[]>([]);
   const [sugestao, setSugestao] = useState<String>("");
 
   const { handleSubmit } = useForm();
 
-  useEffect(() => {
-    console.log("Streamed response: ", sugestao);
-  }, [sugestao]);
-
   const prompt = `Me indique uma ${obra} que contempla os gêneros: ${formatGeneros(
     generos
-  )} e que se encaixe com a seguinte descrição: ${descricao}. Adicione uma breve descrição e um link confiável com mais informações referente a obra no final de cada sugestão seguido do termo "Saiba mais:"`;
+  )} e que se encaixe com a seguinte descrição: ${descricao}. Adicione uma breve descrição da obra seguido de um "#".`;
 
   const onSubmit = (e: any) => {
     generateSugestao(e, prompt, { setLoading, setSugestao });
   };
 
   return (
-    <main className="flex flex-col  max-w-md h-screen lg:max-w-2xl mx-auto text-center items-center justify-center">
-      <a
-        href="https://github.com/marcell0lopes/cinefacil"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex max-w-fitt items-center justify-center space-x-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm text-gray-600 shadow-md transition-colors hover:bg-gray-100 mb-5 hover:cursor-pointer"
-      >
-        <Github />
-        <p>Veja no Github</p>
-      </a>
-      <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-        <h2 className="text-orange-500">
-          Descubra o próximo filme que vai te emocionar ou a próxima série para
-          maratonar
-        </h2>
-        <h1 className="sm:text-6xl text-4xl font-bold text-slate-900">
-          CineFacil
-        </h1>
-        <p className="text-slate-700 mt-5">
-          Deixe uma descrição do que você gostaria de assitir
-        </p>
-        <label htmlFor="descricao" className="sr-only">
-          Descrição
-        </label>
-        <textarea
-          id="descricao"
-          rows={4}
-          value={descricao}
-          onChange={(e) => setDescricao(e.target.value)}
-          placeholder="ex.: Zumbis com motosserras, com produção recente e efeitos espeicias modernos."
-          className="w-full rounded-md border-slate-300 border shadow-sm focus:border-slate-500 focus:ring-orange-500 my-3"
-        />
-        <SelectObra onValueChange={(value) => setObra(value)} />
-        {/* criar regra pelo menos um genero */}
-        {!loading && (
+    <AnimatePresence>
+      <main className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center p-2 pb-8 text-center lg:max-w-2xl">
+        <a
+          href="https://github.com/marcell0lopes/cinefacil"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={clsx(
+            "mb-5 flex max-w-fit items-center justify-center space-x-2 rounded-full  px-4 py-2 text-sm text-gray-600 shadow-md",
+            "border border-gray-300 bg-white",
+            "transition-colors hover:cursor-pointer hover:bg-gray-100"
+          )}
+        >
+          <Github />
+          <p>Veja no Github</p>
+        </a>
+        <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+          <h2 className="text-sm text-orange-500">
+            Descubra o próximo filme que vai te emocionar ou a próxima série
+            para maratonar
+          </h2>
+          <h1 className="text-4xl font-bold text-slate-900 sm:text-6xl">
+            CineFacil
+          </h1>
+          <p className="text-sm text-slate-700">
+            Deixe uma descrição do que você gostaria de assitir
+          </p>
+          <label htmlFor="descricao" className="sr-only">
+            Descrição
+          </label>
+          <textarea
+            id="descricao"
+            rows={4}
+            value={descricao}
+            onChange={(e) => setDescricao(e.target.value)}
+            placeholder="ex.: Zumbis com motosserras, com produção recente e efeitos espeicias modernos."
+            className="w-full rounded-md border border-slate-300 p-4 shadow-sm focus:border-slate-500 focus:ring-orange-500"
+          />
+          <SelectObra onValueChange={(value) => setObra(value)} />
+          <SelectGeneros generos={generos} setGeneros={setGeneros} />
+
           <button
-            className="bg-orange-500 rounded-xl text-white font-medium px-4 py-2 sm:mt-10 mt-8 hover:bg-orange-400 w-full"
+            className={clsx(
+              "w-full rounded-xl px-4 py-2 font-medium text-white hover:bg-orange-400 sm:mt-10",
+              loading ? "bg-orange-300" : "bg-orange-500"
+            )}
             disabled={loading}
             type="submit"
           >
-            Procurar {obra}
+            {loading ? "Carregando..." : `Procurar ${obra}`}
           </button>
-        )}
-        {loading && <p>Carregando...</p>}
-        {sugestao}
-      </form>
-      {/* Footer  -> Social Links */}
-    </main>
+
+          {sugestao && <ResizablePanel>{sugestao}</ResizablePanel>}
+        </form>
+      </main>
+      <footer className="mt-10 flex w-full  flex-row items-center justify-between bg-slate-100 p-8 text-slate-700">
+        <p>
+          Feito por{" "}
+          <a
+            href="https://www.linkedin.com/in/marcellolopes30/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Marcello Lopes
+          </a>
+        </p>
+        <div className="[&_a]:hover text flex gap-4">
+          <a
+            href="https://github.com/marcell0lopes"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <GitHubLogoIcon className="h-5 w-5" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/marcellolopes30/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <LinkedInLogoIcon className="h-5 w-5" />
+          </a>
+          <a
+            href="https://twitter.com/marcellofront"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <TwitterLogoIcon className="h-5 w-5" />
+          </a>
+        </div>
+      </footer>
+    </AnimatePresence>
   );
 };
 
