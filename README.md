@@ -2,6 +2,8 @@
 
 Esse projeto gera sugestões de Filmes, Séries, Animes ou Reality Shows com bases nos inputs do usuário utilizan Inteligência Artificial.
 
+https://user-images.githubusercontent.com/93684818/216857521-9344b6ff-8507-4420-a068-c0e70ba7e81c.mp4
+
 ## Como funciona
 
 Esse projeto utiliza [OpenAI GPT-3 API](https://openai.com/api), especificamente o modelo `text-davinci-003` e [Vercel Edge functions](https://vercel.com/features/edge-functions) com streaming de dados (também deixei a rota `/api/generate` com uma requisição normal, sem streaming, caso queiram comparar os arquivos). A aplicação constrói o prompt de acordo com os inputs do usuário e manda a requisição. 
