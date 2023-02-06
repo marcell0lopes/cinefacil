@@ -68,7 +68,7 @@ const Home: NextPage = () => {
             rows={4}
             value={descricao}
             onChange={(e) => setDescricao(e.target.value)}
-            placeholder="ex.: Zumbis com motosserras, com produção recente e efeitos espeicias modernos."
+            placeholder="ex.: Zumbis com motosserras, com produção recente e efeitos especiais modernos."
             className="w-full rounded-md border border-slate-300 p-4 shadow-sm focus:border-slate-500 focus:ring-orange-500"
           />
           <SelectObra onValueChange={(value) => setObra(value)} />
